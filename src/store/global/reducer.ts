@@ -1,3 +1,4 @@
+import {createWrapper, Context, HYDRATE} from 'next-redux-wrapper';
 
 import globalTypes from './type'
 import { post } from '../../api/index'
@@ -12,11 +13,12 @@ const defaultState:defaultStateI = {
 
 const globalReducer = ( state = defaultState, action ) => {
     switch( action.type ){
+
         case globalTypes.SET_POSTS:
             {
                 return {
                     ...state,
-                    posts: action.posts,
+                    wposts: action.posts,
                 }
             }
         default: {

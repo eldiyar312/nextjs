@@ -1,40 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-import { connect } from 'react-redux'
 
 import { routes } from '../src/utils/routes'
 import Message from '../src/components/message'
 import { requests } from '../src/api'
 import Button from '../src/components/button'
+import store from '../src/store/store'
 
 function Home({ posts }) {
 
     const router = useRouter()
-
-    useEffect(() => {
-
-        (async () => {
-            await requests.getPosts()
-        })()
-
-    }, [])
 
     return (
         <Root>
             {posts && posts.length && posts.map(post => 
                 <Message key={post.id} post={post}/>
             )}
-            <StyledButton onClick={() => router.push(routes.createPost)}>new post +</StyledButton>
+            <StyledButton
+                onClick={() => router.push(routes.createPost)}
+            >
+                new post +
+            </StyledButton>
         </Root>
     )
 }
 
-const mapStateToProps = (state) => ({
-    posts: state.global.posts,
-})
+export async function getServerSideProps(context) {
 
-export default  connect( mapStateToProps, null )( Home )
+    const posts = await requests.getPosts()
+
+    return {
+        props: { posts }
+    }
+}
+
+export default Home
 
 const Root = styled.div`
     display: flex;

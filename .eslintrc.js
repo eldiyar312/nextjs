@@ -38,9 +38,6 @@ module.exports = {
                 // We will use TypeScript's types for component props instead
                 'react/prop-types': 'off',
 
-                // No need to import React when using Next.js
-                'react/react-in-jsx-scope': 'off',
-
                 // This rule is not compatible with Next.js's <Link /> components
                 'jsx-a11y/anchor-is-valid': 'off',
 

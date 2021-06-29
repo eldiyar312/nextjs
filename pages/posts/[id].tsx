@@ -1,34 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React from 'react'
 import { useRouter } from 'next/router'
-import { connect } from 'react-redux'
 
-import { post } from '../../src/api/index'
+import { post, requests } from '../../src/api/index'
 import Message from '../../src/components/message'
 import Button from '../../src/components/button'
+import { routes } from '../../src/utils/routes'
 
 interface props {
-    posts: Array<post>
+    post: post | null | undefined
 }
 
-function PostID({ posts }: props) {
-
-    const [ post, setPost ] = useState(null)
-
-    useEffect(() => {
-
-        const post = posts.find((post:post) => post.id === +router.query.id)
-
-        setPost(post)
-
-    }, [posts])
+function PostID({ post }: props ) {
 
     const router = useRouter()
 
     return (
         <div>
-            <Button onClick={() => router.back()}> 
-                Go back
+            <Button onClick={() => router.push(routes.home)}> 
+                Go home
             </Button>
 
             <Message post={post}/>
@@ -36,14 +25,16 @@ function PostID({ posts }: props) {
     )
 }
 
-const mapStateToProps = (state) => ({
-    posts: state.global.posts,
-})
+export async function getServerSideProps(ctx) {
 
-export default connect( mapStateToProps, null )( PostID )
+    const posts = await requests.getPosts()
 
-PostID.getInitialProps = async (ctx) => {
+    // == потому что id по разному бывает ('xsf-sd', '1', '3', '7v')
+    const post = posts.find((post:post) => post.id == ctx.query.id)
+
     return {
-        id: ctx.query.id
+        props: {post}
     }
 }
+
+export default PostID
